@@ -48,7 +48,7 @@ resource "aws_subnet" "private_subnet_1a" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name    = "${var.project}-${var.environment}-public-subnet-1a"
+    Name    = "${var.project}-${var.environment}-private-subnet-1a"
     Project = var.project
     Env     = var.environment
     Type    = "private"
@@ -62,10 +62,52 @@ resource "aws_subnet" "private_subnet_1c" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name    = "${var.project}-${var.environment}-public-subnet-1c"
+    Name    = "${var.project}-${var.environment}-private-subnet-1c"
     Project = var.project
     Env     = var.environment
     Type    = "private"
   }
-  // test
+}
+
+// ルートテーブル
+resource "aws_route_table" "public_route_table" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name    = "${var.project}-${var.environment}-public-route-table"
+    Project = var.project
+    Env     = var.environment
+    Type    = "public"
+  }
+}
+
+resource "aws_route_table_association" "public_rt_1a" {
+  route_table_id = aws_route_table.public_route_table.id
+  subnet_id      = aws_subnet.public_subnet_1a.id
+}
+
+resource "aws_route_table_association" "public_rt_1c" {
+  route_table_id = aws_route_table.public_route_table.id
+  subnet_id      = aws_subnet.public_subnet_1c.id
+}
+
+resource "aws_route_table" "private_route_table" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name    = "${var.project}-${var.environment}-private-route-table"
+    Project = var.project
+    Env     = var.environment
+    Type    = "private"
+  }
+}
+
+resource "aws_route_table_association" "private_rt_1a" {
+  route_table_id = aws_route_table.private_route_table.id
+  subnet_id      = aws_subnet.private_subnet_1a.id
+}
+
+resource "aws_route_table_association" "private_rt_1c" {
+  route_table_id = aws_route_table.private_route_table.id
+  subnet_id      = aws_subnet.private_subnet_1c.id
 }
